@@ -1,0 +1,18 @@
+{
+  "prefix": "TLM",
+  "base": 1,
+  "next_id": 12,
+  "map": {
+    "lb-southwest-florida-212": 1,
+    "lb-southwest-florida-211": 2,
+    "lb-southwest-florida-210": 3,
+    "lb-south-florida-206": 4,
+    "lb-south-florida-173": 5,
+    "lb-south-florida-70": 6,
+    "lb-charleston-south-carolina-221": 7,
+    "lb-louisburg-nc-laundry-for-sale": 8,
+    "lb-temple-terrace-fl2": 9,
+    "sun-profitable-laundromat-metro-baton-rouge-59505": 10,
+    "sun-coin-laundry-20-years-same-location-55703": 11
+  }
+}

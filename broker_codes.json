@@ -1,0 +1,22 @@
+{
+  "_README": "Laundromat broker source registry. Mirrors the veterinary-scrapers/dental TDPM broker_codes.json pattern. site_prefix TLM = The Laundry Market (feeds thelaundrymarket.com). NEVER collides with TDPM-/TVM-/other verticals' siteId prefixes. 'ref_prefix' is the source-scoped broker reference shown muted on cards. 'aggregator: true' sources are treated like the network's other blocked aggregators and purged by the normalizer.",
+  "site_prefix": "TLM",
+  "sources": {
+    "lbrokers": {
+      "broker_name": "Laundry Brokers",
+      "broker_url": "https://www.lbrokers.com/stores-for-sale",
+      "ref_prefix": "LB",
+      "aggregator": false
+    },
+    "sunbelt": {
+      "broker_name": "Sunbelt Network",
+      "broker_url": "https://www.sunbeltnetwork.com/business-search/business-results/s-laundromats-coin-laundry-for-sale-128/",
+      "ref_prefix": "SUN",
+      "aggregator": false
+    }
+  },
+  "blocked_aggregators": [
+    "bizbuysell", "bizquest", "loopnet", "dealstream", "businessbroker",
+    "vestedbb", "globalbx", "bizscout", "bizben", "sudslist"
+  ]
+}

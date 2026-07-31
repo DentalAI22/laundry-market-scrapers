@@ -1,0 +1,59 @@
+# Laundry (laundromat) listings scraper — scheduled aggregation.
+#
+# Runs ONCE DAILY (10:15 UTC), staggered after car wash's 10:00 UTC slot to
+# spread GitHub Actions load across the network's daily scrape jobs (same
+# free-tier-safe cadence standard the network uses — see veterinary's
+# scrape-veterinary.yml for the original rationale).
+#
+# HOSTED at DentalAI22/laundry-market-scrapers, PUBLIC -> GitHub Actions
+# minutes are unlimited/free. The job pushes back with the default
+# GITHUB_TOKEN (permissions.contents: write) — no PAT needed.
+#
+# Mirrors the network's standard scraper Action pattern: checkout -> install
+# deps -> run scrapers -> normalize -> commit the updated dataset.
+
+name: Scrape Laundry Listings
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "15 10 * * *"    # daily full refresh at 10:15 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run scrapers + normalize
+        run: python run_all.py
+
+      - name: Commit refreshed dataset
+        # This rig is its own GitHub repo (DentalAI22/laundry-market-scrapers,
+        # PUBLIC). It commits ONLY its own tracked files here. It does NOT
+        # reach into the site repo (../laundry is a SEPARATE git repo,
+        # DentalAI22/laundry) — instead the site PULLS this repo's
+        # listings.json at build time (npm `prebuild` ->
+        # scripts/fetch-listings.mjs -> the raw.githubusercontent URL), so a
+        # fresh `vercel --prod` / rebuild republishes with the latest
+        # dataset. No cross-repo push credentials required anywhere.
+        run: |
+          git config user.name  "laundry-scraper-bot"
+          git config user.email "jonathan@tdibroker.com"
+          git add listings.json output/*.csv site_id_registry.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(laundry): refresh listings $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase origin main && git push
+          else
+            echo "No listing changes."
+          fi
